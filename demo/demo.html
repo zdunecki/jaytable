@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Jay Table</title>
+</head>
+<div id="bind"></div>
+<body>
+<script type="text/javascript" src="../build/jaytable.min.js"></script>
+<script type="text/javascript" ">
+		var json ={
+			"titles": [ 
+			        [   
+			            { 
+			                "title": "JayTableA"  
+			            },                         
+			            {                          
+			                "title": "JayTableB"   
+			            } 
+			        ]
+			    ], 
+			    "elements": [ 
+			            { 
+			            "columns": [                                         
+			              {                      
+			                "row":"JayTable is Awesome"   
+			              },                              
+			              {                      
+			                "row":"JayTable is Awesome!"  
+			              }                               
+			            ]                                 
+			           },
+			           { 
+			            "columns": [  
+			              {
+			                "row":"JayTable is Awesome 2" 
+			              },                               
+			              {                                 
+			                "row":"JayTable is Awesome 2!" 
+			              }
+			            ]
+			           }
+			      ]
+			}
+	var demo = new JayTable();
+	demo.jay(json);
+	demo.on('jaysuccess',function(event,data){
+	  document.getElementById("bind").innerHTML = data;
+	});
+</script>
+
+</body>
+</html>
