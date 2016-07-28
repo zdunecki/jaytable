@@ -2,8 +2,7 @@ const APP = "JayTable";
 
 class JayTable {
   constructor(file,createbtn) {
-  	this.file = file;
-  	this.createbtn = createbtn;
+
   	this.events = {};
   }
 
@@ -23,11 +22,31 @@ class JayTable {
         delete this.events[event];  
    }
 
-  jay(){
+  jay(json){
+  	try{
+	  const jayTableService = new JayTableService(json);
+	  jayTableService.jTableIsValid().then(()=>{
+	  	return jayTableService.convertToJayTable();
+	  	}).then((JayTable)=>{
+	  		const exporter = new jayExporter(JayTable);
+	  		return exporter.exportToHTML();
+	  	}).then((tablecode)=>{
+	  		this.emit('jaysuccess',tablecode);
+	  	}).catch(err=>{
+	  		this.emit('jayfailure');
+	  	})
+	  	}catch(e){
+	  		console.log(e);
+	  	}
+  }
+  uploadjay(file,createbtn){
+  	this.file = file;
+  	this.createbtn = createbtn;
+  	console.log(this.file);
 
   	this.file.addEventListener("change",()=>{
-  		const uploadService = new UploadService(this.file.files[0]);
-  		uploadService.upload().then((res)=>{
+  		const uploadService = new UploadService();
+  		uploadService.upload(this.file.files[0]).then((res)=>{
   			this.uploadData = res;
   			this.emit('uploadsuccess',res);
   		}).catch(err=>{
@@ -58,14 +77,10 @@ class JayTable {
   }
 }
 
-class UploadService extends JayTable{
-	constructor(file){
-		super(file);
-	}
-	upload(){
+class UploadService{
+	upload(file){
 		const fileType = ['json'];
-
-		const extension = this.file.name.split('.').pop().toLowerCase(),
+		const extension = file.name.split('.').pop().toLowerCase(),
 		isSuccess = fileType.indexOf(extension) > -1;
 
 		return new Promise((resolve, reject) => {
@@ -75,7 +90,7 @@ class UploadService extends JayTable{
 				 reader.onload = function (e) {
 	                resolve(e.target.result);
 	            }
-	            reader.readAsBinaryString(this.file);
+	            reader.readAsBinaryString(file);
 			}else{
 				reject("Bad format validation, make sure you upload json file!")
 			}
