@@ -4,6 +4,7 @@ from json to table
 ##Usage
 
 ```javascript
+<script type="text/javascript" src="dist/jaytable.min.js"></script>
 var demo = new JayTable();
 ```
 ### Build by JSON
